@@ -11,14 +11,11 @@ venv/
 .env
 .env.*
 
-# Test and cache
+# Testing and cache
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
 
-# Frontend dependencies and build
+# Frontend
 node_modules/
 dist/
-
-# IDE
-.vscode/
