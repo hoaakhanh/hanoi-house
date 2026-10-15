@@ -35,3 +35,14 @@ def list_listing(district: str | None = None, min_price: float | None = None, li
         results = [item for item in results if item["price_per_m2"] >= min_price]
     return results[:limit]
 
+from backend.app.schemas import HouseFeatures, HouseFeaturesResponse
+
+@app.post("/predict", response_model=HouseFeaturesResponse)
+def predict(house: HouseFeatures):
+    return {
+        "district": house.district,
+        "house_type": house.house_type,
+        "area_m2": house.area_m2,
+        "floors": house.floors,
+        "bedrooms": house.bedrooms
+    }
