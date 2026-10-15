@@ -60,3 +60,4 @@ if __name__ == "__main__":
     df = clean(raw)
     df.to_csv(OUT, index=False)
     print(f"{len(raw)} raw rows -> {len(df)} clean rows")
+    
