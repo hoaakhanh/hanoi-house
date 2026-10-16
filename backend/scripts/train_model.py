@@ -14,7 +14,7 @@ NUMERIC = ["area_m2", "floors", "bedrooms"]
 TARGET = "price_per_m2"
 VERSION = "v1"
 
-df = pd.read_csv("data/listings_clean.csv")
+df = pd.read_csv("backend/data/listings_clean.csv")
 X, y = df[CATEGORICAL + NUMERIC], df[TARGET]
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
@@ -33,3 +33,10 @@ joblib.dump(
     {"model": model, "version": VERSION, "features": CATEGORICAL + NUMERIC, "mae": mae},
     f"ml_models/price_model_{VERSION}.joblib",
 )
+
+'''
+Khi FastAPI khởi động, tải lại model đó.
+bundle = joblib.load("ml_models/price_model_v1.joblib")
+model = bundle["model"]
+'''
+

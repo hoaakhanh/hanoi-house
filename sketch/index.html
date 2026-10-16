@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>HanoiHouse Sketch</title>
+  </head>
+  <body>
+    <h1>HanoiHouse</h1>
+    <form id="form">
+      <label>District
+        <select name="district">
+          <option>Quận Cầu Giấy</option>
+          <option>Quận Đống Đa</option>
+          <option>Quận Hoàng Mai</option>
+        </select>
+      </label>
+      <label>Area (m²) <input name="area_m2" type="number" value="45" /></label>
+      <button>Estimate</button>
+    </form>
+    <p id="result"></p>
+
+    <script>
+      const form = document.getElementById("form");
+      const result = document.getElementById("result");
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();  // stop the browser from reloading the page
+        const data = new FormData(form);
+
+        const response = await fetch("http://localhost:8000/predict", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            district: data.get("district"),
+            house_type: "Nhà ngõ, hẻm",
+            area_m2: Number(data.get("area_m2")),
+          }),
+        });
+        const prediction = await response.json();
+
+        result.textContent = response.ok
+          ? `About ${prediction.total_price} billion VND (${prediction.price_per_m2} million VND/m²)`
+          : `Error: ${JSON.stringify(prediction.detail)}`;
+      });
+    </script>
+  </body>
+</html>
