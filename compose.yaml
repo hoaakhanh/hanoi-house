@@ -1,0 +1,14 @@
+services: # Khai báo service 
+  db: # db là tên service PostgreSQL
+    image: postgres:17 # Chọn image
+    environment: # Cấu hình database
+      POSTGRES_USER: hanoihouse
+      POSTGRES_PASSWORD: hanoihouse
+      POSTGRES_DB: hanoihouse
+    ports:
+      - "5432:5432" # Ánh xạ cổng - Cấu trúc là: PORT_MAY_CA_NHAN:PORT_CONTAINER
+    volumes:
+      - pgdata:/var/lib/postgresql/data # Lưu dữ liệu
+
+volumes: # khai báo volume do Docker Compose quản lý -> dữ liệu có thể tồn tại sau khi container bị xóa, miễn là volume không bị xóa.
+  pgdata:

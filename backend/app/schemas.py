@@ -2,13 +2,15 @@ from enum import Enum
 from pydantic import BaseModel, Field
 
 class HouseType(str, Enum):
-    PRIVATE_HOUSE = "Nhà riêng"
-    APARTMENT = "Chung cư"
-    VILLA = "Biệt thự"
+    ALLEY_HOUSE = "Nhà ngõ, hẻm"
+    STREET_HOUSE = "Nhà mặt phố, mặt tiền"
+    TOWNHOUSE = "Nhà phố liền kề"
+    VILLA = "Nhà biệt thự"
 class HouseFeatures(BaseModel):
     district: str
     house_type : HouseType
     area_m2 : float = Field(gt=0)
+    legal_status: str | None = None
     floors : int | None = None
     bedrooms : int | None = None
 
@@ -16,3 +18,8 @@ class HouseFeaturesResponse(BaseModel):
     district: str
     area_m2: float
     house_type: HouseType
+
+class PredictionOut(BaseModel):
+    price_per_m2: float
+    total_price: float
+    model_version: str

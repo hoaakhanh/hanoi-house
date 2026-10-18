@@ -36,7 +36,7 @@ joblib.dump(
 
 '''
 Khi FastAPI khởi động, tải lại model đó.
-bundle = joblib.load("ml_models/price_model_v1.joblib")
+bundle = joblib.load("../ml_models/price_model_v1.joblib")
 model = bundle["model"]
 '''
 

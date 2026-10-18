@@ -1,48 +1,48 @@
 from fastapi import FastAPI, HTTPException
 
-app = FastAPI(title="HanoiHouse API")
+from contextlib import asynccontextmanager
+from pathlib import Path
 
-LISTINGS = [
-    {"id": 1, "district": "Quận Cầu Giấy", "area_m2": 46, "price_per_m2": 86.96},
-    {"id": 2, "district": "Quận Thanh Xuân", "area_m2": 37, "price_per_m2": 116.22},
-    {"id": 3, "district": "Quận Hai Bà Trưng", "area_m2": 40, "price_per_m2": 65.0},
-]
+from fastapi.middleware.cors import CORSMiddleware
+
+from backend.app.ml import PriceModel
+from backend.app.schemas import HouseFeatures, HouseFeaturesResponse, PredictionOut
+
+app = FastAPI(title="HanoiHouse API")
 
 @app.get("/")
 def root():
     return {"mesesage": "Welcome to HanoiHouse"}
 
-@app.get("/listings")
-def list_listings(district: str | None = None, limit: int = 10):
-    results = LISTINGS
-    if district:
-        results = [item for item in results if item["district"] == district]
-    return results[:limit]
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    model_path = Path(__file__).resolve().parents[2] / "ml_models" / "price_model_v1.joblib"
+    app.state.price_model = PriceModel(str(model_path))
+    yield
 
-@app.get("/listings/{listing_id}")
-def get_listing(listing_id: int):
-    for item in LISTINGS:
-        if item["id"] == listing_id:
-            return item
-    raise HTTPException(status_code=404, detail="Listing not found") 
+app = FastAPI(
+    title="HanoiHouse API",
+    lifespan=lifespan
+)
 
-@app.get("/listings")
-def list_listing(district: str | None = None, min_price: float | None = None, limit: int = 10):
-    results = LISTINGS
-    if district:
-        results = [item for item in results if item["district"] == district]
-    if min_price:
-        results = [item for item in results if item["price_per_m2"] >= min_price]
-    return results[:limit]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://127.0.0.1:5500",
+        "http://localhost:5500",
+    ],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-from backend.app.schemas import HouseFeatures, HouseFeaturesResponse
-
-@app.post("/predict", response_model=HouseFeaturesResponse)
+@app.post("/predict", response_model=PredictionOut)
 def predict(house: HouseFeatures):
-    return {
-        "district": house.district,
-        "house_type": house.house_type,
-        "area_m2": house.area_m2,
-        "floors": house.floors,
-        "bedrooms": house.bedrooms
-    }
+    model = app.state.price_model
+
+    price_per_m2 = round(model.predict(house), 2)
+
+    return PredictionOut(
+        price_per_m2=price_per_m2,
+        total_price=round(price_per_m2 * house.area_m2 / 1000, 2),
+        model_version=model.version,
+    )

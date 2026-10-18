@@ -15,6 +15,7 @@
         </select>
       </label>
       <label>Area (m²) <input name="area_m2" type="number" value="45" /></label>
+      <label>Bedrooms <input name="bedrooms" type="number" value="2" /></label>
       <button>Estimate</button>
     </form>
     <p id="result"></p>
@@ -28,12 +29,13 @@
         const data = new FormData(form);
 
         const response = await fetch("http://localhost:8000/predict", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
+          method: "POST", // Gửi dữ liệu đến Backend
+          headers: { "Content-Type": "application/json" }, // Báo rằng dữ liệu gửi đi là JSON
           body: JSON.stringify({
             district: data.get("district"),
             house_type: "Nhà ngõ, hẻm",
             area_m2: Number(data.get("area_m2")),
+            bedrooms: Number(data.get("bedrooms"))
           }),
         });
         const prediction = await response.json();
