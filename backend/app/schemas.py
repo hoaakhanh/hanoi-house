@@ -1,5 +1,6 @@
+from datetime import date
 from enum import Enum
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 class HouseType(str, Enum):
     ALLEY_HOUSE = "Nhà ngõ, hẻm"
@@ -23,3 +24,17 @@ class PredictionOut(BaseModel):
     price_per_m2: float
     total_price: float
     model_version: str
+
+class ListingOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True) # rom_attributes=True cho phép Pydantic đọc dữ liệu từ các thuộc tính đó để tạo dữ liệu đầu ra theo ListingOut
+
+    id: int
+    posted_on: date
+    district: str
+    ward: str | None = None
+    house_type: str
+    legal_status: str | None = None
+    floors: int | None = None
+    bedrooms: int | None = None
+    area_m2: float
+    price_per_m2: float
