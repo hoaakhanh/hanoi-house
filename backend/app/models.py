@@ -1,3 +1,4 @@
+# Định nghĩa các bảng database bằng SQLAlchemy
 from datetime import date
 
 from sqlalchemy import String

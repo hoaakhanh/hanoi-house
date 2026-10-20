@@ -1,3 +1,4 @@
+# Tạo kết nối database và cung cấp database session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase, Session
 

@@ -1,3 +1,4 @@
+ # Định nghĩa cấu trúc dữ liệu đầu vào/đầu ra bằng Pydantic
 from datetime import date
 from enum import Enum
 from pydantic import BaseModel, ConfigDict, Field
@@ -38,3 +39,14 @@ class ListingOut(BaseModel):
     bedrooms: int | None = None
     area_m2: float
     price_per_m2: float
+
+class ListingPage(BaseModel):
+    items: list[ListingOut]
+    total: int
+    page: int
+    size: int
+
+class DistrictStats(BaseModel):
+    district: str
+    listings: int
+    avg_price_per_m2: float
