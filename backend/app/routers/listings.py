@@ -23,7 +23,7 @@ def get_listing(
 ):
     house = db.get(Listing, listing_id)
 
-    if house is None:
+    if house is None: # Nếu không kiểm tra, API có thể trả về None thay vì thông báo lỗi rõ ràng khi ID không tồn tại.
         raise HTTPException(
             status_code=404,
             detail="Listing not found"
